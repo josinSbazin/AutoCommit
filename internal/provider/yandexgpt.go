@@ -99,7 +99,7 @@ func (p *YandexGPTProvider) Generate(ctx context.Context, prompt string) (string
 		req.Header.Set("Authorization", "Bearer "+p.iamToken)
 	}
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("request failed: %w", err)
 	}

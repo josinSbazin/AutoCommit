@@ -8,9 +8,12 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/josinSbazin/AutoCommit/internal/config"
 )
+
+var httpClient = &http.Client{Timeout: 60 * time.Second}
 
 type OpenAIProvider struct {
 	apiKey   string
@@ -70,7 +73,7 @@ func (p *OpenAIProvider) Generate(ctx context.Context, prompt string) (string, e
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+p.apiKey)
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("request failed: %w", err)
 	}

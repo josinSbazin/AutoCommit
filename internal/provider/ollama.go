@@ -39,7 +39,7 @@ func (p *OllamaProvider) Name() string {
 }
 
 func (p *OllamaProvider) Validate() error {
-	resp, err := http.Get(p.host + "/api/tags")
+	resp, err := httpClient.Get(p.host + "/api/tags")
 	if err != nil {
 		return fmt.Errorf("cannot connect to Ollama at %s: %w", p.host, err)
 	}
@@ -74,7 +74,7 @@ func (p *OllamaProvider) Generate(ctx context.Context, prompt string) (string, e
 
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("request failed: %w", err)
 	}

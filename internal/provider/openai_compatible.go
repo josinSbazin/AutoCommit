@@ -101,7 +101,7 @@ func (p *OpenAICompatibleProvider) Generate(ctx context.Context, prompt string) 
 		req.Header.Set("Authorization", "Bearer "+p.apiKey)
 	}
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("request failed: %w", err)
 	}

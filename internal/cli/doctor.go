@@ -53,7 +53,8 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 			fmt.Println("Not configured")
 			fmt.Println("   Run 'autocommit init' to configure")
 		} else {
-			if hasAPIKey(cfg.Provider) {
+			envName := getAPIKeyEnvName(cfg.Provider)
+			if envName == "" || hasAPIKey(cfg.Provider) {
 				fmt.Println("OK")
 
 				fmt.Print("Provider connection... ")
@@ -71,7 +72,7 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 				}
 			} else {
 				fmt.Println("API key not found")
-				fmt.Printf("   Set %s environment variable\n", getAPIKeyEnvName(cfg.Provider))
+				fmt.Printf("   Set %s environment variable\n", envName)
 				issues++
 			}
 		}
@@ -114,10 +115,10 @@ func getAPIKeyEnvName(providerName string) string {
 		return "GIGACHAT_CLIENT_ID"
 	case "yandexgpt":
 		return "YANDEX_API_KEY"
-	case "google":
-		return "GOOGLE_API_KEY"
-	case "mistral":
-		return "MISTRAL_API_KEY"
+	case "ollama":
+		return ""
+	case "openai-compatible":
+		return "AUTOCOMMIT_API_KEY"
 	default:
 		return "AUTOCOMMIT_API_KEY"
 	}

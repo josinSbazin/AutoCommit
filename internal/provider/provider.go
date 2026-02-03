@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/josinSbazin/AutoCommit/internal/config"
@@ -44,9 +45,8 @@ func AutoDetect(cfg *config.Config) (Provider, error) {
 		{"OPENAI_API_KEY", "openai"},
 		{"GIGACHAT_CLIENT_ID", "gigachat"},
 		{"YANDEX_API_KEY", "yandexgpt"},
-		{"GOOGLE_API_KEY", "google"},
-		{"MISTRAL_API_KEY", "mistral"},
 		{"GROQ_API_KEY", "openai-compatible"},
+		{"TOGETHER_API_KEY", "openai-compatible"},
 	}
 
 	for _, check := range checks {
@@ -56,7 +56,7 @@ func AutoDetect(cfg *config.Config) (Provider, error) {
 		}
 	}
 
-	if isOllamaRunning() {
+	if isOllamaAvailable() {
 		cfg.Provider = "ollama"
 		return NewOllamaProvider(cfg)
 	}
@@ -64,6 +64,15 @@ func AutoDetect(cfg *config.Config) (Provider, error) {
 	return nil, fmt.Errorf("no provider configured. Run 'autocommit init' or set API key")
 }
 
-func isOllamaRunning() bool {
-	return os.Getenv("OLLAMA_HOST") != ""
+func isOllamaAvailable() bool {
+	host := os.Getenv("OLLAMA_HOST")
+	if host == "" {
+		host = "http://localhost:11434"
+	}
+	resp, err := http.Get(host + "/api/tags")
+	if err != nil {
+		return false
+	}
+	resp.Body.Close()
+	return resp.StatusCode == http.StatusOK
 }
