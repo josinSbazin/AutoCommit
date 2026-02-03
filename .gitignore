@@ -1,0 +1,29 @@
+# Config (user-specific)
+.autocommit.yml
+
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/autocommit
+bin/
+
+# Test binary
+*.test
+
+# Output
+*.out
+dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
